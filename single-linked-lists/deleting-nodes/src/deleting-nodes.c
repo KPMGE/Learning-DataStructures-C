@@ -1,71 +1,27 @@
-// Simple program to show how to delete nodes in a single linked list
-// Author: Kevin Carvalho de Jesus
-
 #include <stdio.h>
 #include <stdlib.h>
+#include "../include/deleting-nodes.h"
 
-// struct for a linked list node
+// private struct for a linked list node
 typedef struct _node {
   int data;
   struct _node *next;
 } Node_t;
 
-// struct for a linked list, we have the reference for the head and tail of the
-// linked list
-typedef struct _linkedList {
+struct _linkedList {
   Node_t *head;
   Node_t *tail;
-} LinkedList_t;
+};
 
-// function that allocates a node and sets it with the value provided
-Node_t *createNode(int number);
-Node_t *getNode(LinkedList_t *list, int number);
-
-// functions to perform on linked list
-LinkedList_t *createList();
-Node_t* getPreviousNode(LinkedList_t *list, int key);
-void addAtHead(LinkedList_t *list, int number);
-void addAtTail(LinkedList_t *list, int number);
-void addAfter(LinkedList_t *list, int searchNumber, int newNumber);
-void deleteHeadNode(LinkedList_t *list);
-void deleteTailNode(LinkedList_t *list);
-void deleteSpecificNode(LinkedList_t *list, int key);
-void displayLinkedList(LinkedList_t *list);
-void freeList(LinkedList_t *list);
-
-int main(void) {
-  // create empty list
-  LinkedList_t *myList = createList();
-
-  // add some data into the list
-  addAtTail(myList, 30);
-  addAtTail(myList, 532);
-  addAtTail(myList, 53);
-  addAtTail(myList, 63);
-  addAtTail(myList, 85);
-
-  printf("Original linked list:  ");
-  displayLinkedList(myList);
-
-  printf("\nAfter delete head:  ");
-  deleteHeadNode(myList);
-  displayLinkedList(myList);
-
-  printf("\nAfter delete tail:  ");
-  deleteTailNode(myList);
-  displayLinkedList(myList);
-
-  printf("\nAfter delete node with value 53:  ");
-  deleteSpecificNode(myList, 53);
-  displayLinkedList(myList);
-
-  // free linked list
-  freeList(myList);
-
-  return 0;
+// private functions
+void _checkAllocation(void *pointer) {
+  if (pointer == NULL) {
+    printf("Allocation failed!");
+    exit(1);
+  }
 }
 
-Node_t *createNode(int number) {
+Node_t *_createNode(int number) {
   Node_t *allocatedNode = (Node_t *)malloc(sizeof(Node_t));
 
   allocatedNode->data = number;
@@ -73,21 +29,11 @@ Node_t *createNode(int number) {
   return allocatedNode;
 }
 
-LinkedList_t *createList() {
-  LinkedList_t *allocatedList = (LinkedList_t *)malloc(sizeof(LinkedList_t));
-
-  // initialize pointers with NULL
-  allocatedList->head = NULL;
-  allocatedList->tail = NULL;
-
-  return allocatedList;
-}
-
-Node_t *getNode(LinkedList_t *list, int number) {
+Node_t *_getNode(LinkedList_t *list, int key) {
   Node_t *current = list->head;
 
   while (current != NULL) {
-    if (current->data == number) {
+    if (current->data == key) {
       return current;
     }
     current = current->next;
@@ -96,8 +42,7 @@ Node_t *getNode(LinkedList_t *list, int number) {
   return NULL;
 }
 
-
-Node_t* getPreviousNode(LinkedList_t *list, int key) {
+Node_t* _getPreviousNode(LinkedList_t *list, int key) {
   Node_t *current = list->head;
   Node_t *previous;
 
@@ -114,8 +59,22 @@ Node_t* getPreviousNode(LinkedList_t *list, int key) {
   return previous;
 }
 
+
+
+// public functions for linked list
+
+LinkedList_t *createEmptyList() {
+  LinkedList_t *allocatedList = (LinkedList_t *)malloc(sizeof(LinkedList_t));
+
+  // initialize pointers with NULL
+  allocatedList->head = NULL;
+  allocatedList->tail = NULL;
+
+  return allocatedList;
+}
+
 void addAtHead(LinkedList_t *list, int number) {
-  Node_t *newNode = createNode(number);
+  Node_t *newNode = _createNode(number);
 
   // if the list is empty, so the head and tail are the same node
   if (list->head == NULL) {
@@ -131,7 +90,7 @@ void addAtHead(LinkedList_t *list, int number) {
 
 void addAfter(LinkedList_t *list, int searchNumber, int newNumber) {
   // getting the node for the provided searchNumber
-  Node_t *previous = getNode(list, searchNumber);
+  Node_t *previous = _getNode(list, searchNumber);
 
   // if there are no matches
   if (previous == NULL) {
@@ -140,7 +99,7 @@ void addAfter(LinkedList_t *list, int searchNumber, int newNumber) {
   }
 
   // create a new node with newNumber
-  Node_t *newNode = createNode(newNumber);
+  Node_t *newNode = _createNode(newNumber);
 
   // point the next pointer of created node to next pointer of our previous node
   newNode->next = previous->next;
@@ -151,7 +110,7 @@ void addAfter(LinkedList_t *list, int searchNumber, int newNumber) {
 void addAtTail(LinkedList_t *list, int number) {
   // create a node and points it to NULL, because we'll add it at the tail of
   // list
-  Node_t *newNode = createNode(number);
+  Node_t *newNode = _createNode(number);
   newNode->next = NULL;
 
   // if our list is empty, so the head and tail are the same node
@@ -202,7 +161,7 @@ void deleteTailNode(LinkedList_t *list) {
 }
 
 void deleteSpecificNode(LinkedList_t *list, int key) {
-  Node_t *current = getNode(list, key);
+  Node_t *current = _getNode(list, key);
   if (current == NULL) {
     printf("There are no matches for provided key.");
     return;
@@ -214,14 +173,11 @@ void deleteSpecificNode(LinkedList_t *list, int key) {
     return;
   }
 
-  Node_t *previous = getPreviousNode(list, key);
+  Node_t *previous = _getPreviousNode(list, key);
   if (previous == NULL) {
     printf("You can't delete a NULL node.");
     return;
   }
-
-  //printf("current = %d\n", current->data);
-  //printf("previous = %d\n", previous->data);
 
   previous->next = current->next;
   free(current);

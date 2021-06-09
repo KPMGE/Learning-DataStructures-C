@@ -183,6 +183,29 @@ void deleteSpecificNode(LinkedList_t *list, int key) {
   free(current);
 }
 
+void deleteAtPosition(LinkedList_t *list, int position) {
+  // it's actually the head of the list
+  if (position == 0) {
+    deleteHeadNode(list);
+    return;
+  }
+
+  Node_t *current = list->head;
+  for (int i = 0; current != NULL && i < position -1; i++) {
+    current = current->next;
+  }
+
+  // if invalid position was provided
+  if (current == NULL || current->next == NULL) {
+    printf("Invalid position.\n");
+    return;
+  }
+
+  Node_t *previous = _getPreviousNode(list, current->data);
+  previous->next = current->next;
+  free(current);
+}
+
 void displayLinkedList(LinkedList_t *list) {
   Node_t *current = list->head;
 

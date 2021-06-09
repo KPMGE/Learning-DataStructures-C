@@ -13,6 +13,7 @@ void addAfter(LinkedList_t *list, int searchNumber, int newNumber);
 void deleteHeadNode(LinkedList_t *list);
 void deleteTailNode(LinkedList_t *list);
 void deleteSpecificNode(LinkedList_t *list, int key);
+void deleteAtPosition(LinkedList_t *list, int position);
 void displayLinkedList(LinkedList_t *list);
 void freeList(LinkedList_t *list);
 

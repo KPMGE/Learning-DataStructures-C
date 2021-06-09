@@ -5,7 +5,6 @@
 #include <stdlib.h>
 #include "../include/deleting-nodes.h"
 
-
 int main(void) {
   // create empty list
   LinkedList_t *myList = createEmptyList();
@@ -16,6 +15,7 @@ int main(void) {
   addAtTail(myList, 53);
   addAtTail(myList, 63);
   addAtTail(myList, 85);
+  addAtTail(myList, 70);
 
   printf("Original linked list:  ");
   displayLinkedList(myList);
@@ -30,9 +30,14 @@ int main(void) {
   deleteTailNode(myList);
   displayLinkedList(myList);
 
+  // deleting node at position 2
+  printf("\nAfter delete node at position 2:  ");
+  deleteAtPosition(myList, 2);
+  displayLinkedList(myList);
+
   // delete node with value 53
-  printf("\nAfter delete node with value 53:  ");
-  deleteSpecificNode(myList, 53);
+  printf("\nAfter delete node with value 63:  ");
+  deleteSpecificNode(myList, 63);
   displayLinkedList(myList);
 
   // free linked list

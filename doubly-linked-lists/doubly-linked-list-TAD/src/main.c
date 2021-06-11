@@ -1,5 +1,8 @@
 #include <stdio.h>
+#include <stdlib.h>
 #include "../include/doubly-linked-list.h"
+
+void displayArray(int *array, int size);
 
 int main(void) {
   LinkedList_t *myList = createEmptyList();
@@ -24,8 +27,33 @@ int main(void) {
   addBefore(myList, 5, 80);
   displayLinkedList(myList);
 
+  printf("\nValue at position 2: %d", getValueAtPosition(myList, 2));
+  
+  int *arr = convertIntoArray(myList);
+  displayArray(arr, 5);
+
+
   // free allocated list
   freeLinkedList(myList);
+  free(arr);
 
   return 0;
+}
+
+void displayArray(int *array, int size) {
+  printf("\nArray: ");
+
+  printf("\033[1;36m");
+  printf("[");
+
+  for (int i = 0; i < size; i++) {
+    if (i == size - 1) {
+      printf("%d", array[i]);
+      continue;
+    }
+    printf("%d, ", array[i]);
+  }
+
+  printf("]");
+  printf("\033[0m");
 }

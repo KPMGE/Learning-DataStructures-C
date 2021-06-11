@@ -1,5 +1,7 @@
 #include "../include/doubly-linked-list.h"
 #include <stdio.h>
+#include <math.h>
+#include <stdbool.h>
 #include <stdlib.h>
 
 // private structure for a node
@@ -40,8 +42,6 @@ _Node_t *_createNode(int value) {
   return allocatedNode;
 }
 
-void _setValueToNode(_Node_t *node, int newValue) { node->data = newValue; }
-
 _Node_t *_searchForNode(LinkedList_t *list, int key) {
   _Node_t *current = list->head;
 
@@ -56,6 +56,11 @@ _Node_t *_searchForNode(LinkedList_t *list, int key) {
   return NULL;
 }
 
+bool _isEmpty(LinkedList_t *list) {
+  return (list->head == NULL) ? true : false;
+}
+
+
 // public functions
 LinkedList_t *createEmptyList() {
   LinkedList_t *allocatedList = (LinkedList_t *)malloc(sizeof(LinkedList_t));
@@ -68,27 +73,62 @@ LinkedList_t *createEmptyList() {
   return allocatedList;
 }
 
-int getHeadValue(LinkedList_t *list) { return list->head->data; }
+int getHeadValue(LinkedList_t *list) {
+  return list->head->data; 
+}
 
-int getTailValue(LinkedList_t *list) { return list->tail->data; }
+int getTailValue(LinkedList_t *list) {
+  return list->tail->data;
+}
 
-/*
 int getValueAtPosition(LinkedList_t *list, int position) {
+  if (position == 0) {
+    return getHeadValue(list);
+  }
 
+  int count = 0;
+  _Node_t *current = list->head;
+
+  while (current != NULL) {
+    if (count == position) {
+      return current->data;
+    }
+
+    count++;
+    current = current->next;
+  }
+
+  _throwError("Invalid position.");
+  return (int)NAN;
 }
-*/
 
-/*
 int* convertIntoArray(LinkedList_t *list) {
+  if (_isEmpty(list)) {
+    _throwError("The list is empty, couldn't create the array.");
+    return NULL;
+  }
 
+  int *array = (int*) malloc(sizeof(int));
+  _checkAllocation(array);
+
+  int pos = 0;
+  _Node_t *current = list->head;
+  while (current != NULL) {
+    array = realloc(array, (pos + 1) * sizeof(int));
+    array[pos] = getValueAtPosition(list, pos);
+    pos++;
+
+    current = current->next;
+  }
+
+  return array;
 }
-*/
 
 void addAtHead(LinkedList_t *list, int newValue) {
   _Node_t *newNode = _createNode(newValue);
   newNode->previous = NULL;
 
-  if (list->head == NULL) {
+  if (_isEmpty(list)) {
     list->head = newNode;
     list->tail = newNode;
     return;
@@ -102,7 +142,7 @@ void addAtTail(LinkedList_t *list, int newValue) {
   _Node_t *newNode = _createNode(newValue);
   newNode->next = NULL;
 
-  if (list->tail == NULL) {
+  if (_isEmpty(list)) {
     list->head = newNode;
     list->tail = newNode;
     return;

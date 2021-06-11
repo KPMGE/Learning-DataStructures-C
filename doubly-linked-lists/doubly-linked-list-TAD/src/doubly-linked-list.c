@@ -56,6 +56,22 @@ _Node_t *_searchForNode(LinkedList_t *list, int key) {
   return NULL;
 }
 
+_Node_t *_getNodeAtPosition(LinkedList_t *list, int position) {
+  int i = 0;
+  _Node_t *current = list->head;
+
+  while (current != NULL) {
+    if (i == position) {
+      return current;
+    }
+
+    i++;
+    current = current->next;
+  }
+
+  return NULL;
+}
+
 bool _isEmpty(LinkedList_t *list) {
   return (list->head == NULL) ? true : false;
 }
@@ -157,7 +173,7 @@ void addAfter(LinkedList_t *list, int key, int newValue) {
   _Node_t *foundNode = _searchForNode(list, key);
 
   if (foundNode == NULL) {
-    _throwError("There are no matches for provided key.Could't add new value");
+    _throwError("There are no matches for provided key. Could't add new value");
     return;
   }
 
@@ -169,13 +185,14 @@ void addAfter(LinkedList_t *list, int key, int newValue) {
   _Node_t *newNode = _createNode(newValue);
   newNode->next = foundNode->next;
   foundNode->next = newNode;
+  newNode->previous = foundNode->previous;
 }
 
 void addBefore(LinkedList_t *list, int key, int newValue) {
   _Node_t *foundNode = _searchForNode(list, key);
 
   if (foundNode == NULL) {
-    _throwError("There are no matches for provided key.Could't add new value");
+    _throwError("There are no matches for provided key. Could't add new value");
     return;
   }
 
@@ -189,13 +206,62 @@ void addBefore(LinkedList_t *list, int key, int newValue) {
   newNode->next = foundNode;
 }
 
-void deleteHead(LinkedList_t *list) {}
+void deleteHead(LinkedList_t *list) {
+  if (_isEmpty(list)) {
+    _throwError("The list is empty.");
+    return;
+  }
 
-void deleteTail(LinkedList_t *list) {}
+  _Node_t *aux = list->head;
+  list->head = list->head->next;
+  list->head->previous = NULL;
+  free(aux);
+}
 
-void deleteSpecificNode(LinkedList_t *list, int key) {}
+void deleteTail(LinkedList_t *list) {
+  if (_isEmpty(list)) {
+    _throwError("The list is empty.");
+    return;
+  }
 
-void deleteAtPosition(LinkedList_t *list, int position) {}
+  _Node_t *aux = list->tail;
+  list->tail->previous->next->next = NULL;
+  free(aux);
+}
+
+void deleteNodeWithKey(LinkedList_t *list, int key) {
+  _Node_t *foundNode = _searchForNode(list, key);
+
+  if (foundNode == NULL) {
+    _throwError("There are no matches for provided key. Could't delete value");
+    return;
+  }
+
+  if (foundNode->previous == NULL) {
+    deleteHead(list);
+    return;
+  }
+
+  foundNode->previous->next->next = foundNode->next;
+  free(foundNode);
+}
+
+void deleteAtPosition(LinkedList_t *list, int position) {
+  _Node_t *foundNode = _getNodeAtPosition(list, position);
+
+  if (foundNode == NULL) {
+    _throwError("There are no matches for provided key. Could't delete value");
+    return;
+  }
+
+  if (foundNode->previous == NULL) {
+    deleteHead(list);
+    return;
+  }
+
+  foundNode->previous->next->next = foundNode->next;
+  free(foundNode);
+}
 
 void displayLinkedList(LinkedList_t *list) {
   _Node_t *current = list->head;

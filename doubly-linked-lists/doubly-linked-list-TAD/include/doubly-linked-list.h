@@ -15,7 +15,7 @@ void addAfter(LinkedList_t *list, int key, int newValue);
 void addBefore(LinkedList_t *list, int key, int newValue);
 void deleteHead(LinkedList_t *list);
 void deleteTail(LinkedList_t *list);
-void deleteSpecificNode(LinkedList_t *list, int key);
+void deleteNodeWithKey(LinkedList_t *list, int key);
 void deleteAtPosition(LinkedList_t *list, int position);
 void displayLinkedList(LinkedList_t *list);
 void displayLinkedListReverse(LinkedList_t *list);

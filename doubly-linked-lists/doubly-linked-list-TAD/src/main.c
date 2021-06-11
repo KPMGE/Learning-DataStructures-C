@@ -32,6 +32,21 @@ int main(void) {
   int *arr = convertIntoArray(myList);
   displayArray(arr, 5);
 
+  printf("\nDelete head: ");
+  deleteHead(myList);
+  displayLinkedList(myList);
+
+  printf("\nDelete tail: ");
+  deleteTail(myList);
+  displayLinkedList(myList);
+
+  printf("\nDelete at position 1: ");
+  deleteAtPosition(myList, 1);
+  displayLinkedList(myList);
+
+  printf("\nDelete node with value 200: ");
+  deleteNodeWithKey(myList, 200);
+  displayLinkedList(myList);
 
   // free allocated list
   freeLinkedList(myList);

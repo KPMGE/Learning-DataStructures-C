@@ -1,6 +1,6 @@
+#include "../include/doubly-linked-list.h"
 #include <stdio.h>
 #include <stdlib.h>
-#include "../include/doubly-linked-list.h"
 
 // private structure for a node
 typedef struct _node {
@@ -10,7 +10,7 @@ typedef struct _node {
 } _Node_t;
 
 // public structure, for linked list
-struct _linkedList{
+struct _linkedList {
   _Node_t *head;
   _Node_t *tail;
 };
@@ -25,14 +25,14 @@ void _checkAllocation(void *pointer) {
   }
 }
 
-void throwError(char *message) {
+void _throwError(char *message) {
   printf("\033[1;35m");
-  printf("%s", message);
+  printf("%s\n", message);
   printf("\033[0m");
 }
 
 _Node_t *_createNode(int value) {
-  _Node_t *allocatedNode = (_Node_t*) malloc(sizeof(_Node_t));
+  _Node_t *allocatedNode = (_Node_t *)malloc(sizeof(_Node_t));
 
   _checkAllocation(allocatedNode);
   allocatedNode->data = value;
@@ -40,18 +40,25 @@ _Node_t *_createNode(int value) {
   return allocatedNode;
 }
 
-void _setValueToNode(_Node_t *node, int newValue) {
-  node->data = newValue;
-}
+void _setValueToNode(_Node_t *node, int newValue) { node->data = newValue; }
 
-/*
-_Node_t *searchForNode(LinkedList_t *list, int key) {
+_Node_t *_searchForNode(LinkedList_t *list, int key) {
+  _Node_t *current = list->head;
+
+  while (current != NULL) {
+    if (current->data == key) {
+      return current;
+    }
+
+    current = current->next;
+  }
+
+  return NULL;
 }
-*/
 
 // public functions
 LinkedList_t *createEmptyList() {
-  LinkedList_t *allocatedList = (LinkedList_t*) malloc(sizeof(LinkedList_t));
+  LinkedList_t *allocatedList = (LinkedList_t *)malloc(sizeof(LinkedList_t));
 
   _checkAllocation(allocatedList);
 
@@ -61,13 +68,9 @@ LinkedList_t *createEmptyList() {
   return allocatedList;
 }
 
-int getHeadValue(LinkedList_t *list) {
-  return list->head->data;
-}
+int getHeadValue(LinkedList_t *list) { return list->head->data; }
 
-int getTailValue(LinkedList_t *list) {
-  return list->tail->data;
-}
+int getTailValue(LinkedList_t *list) { return list->tail->data; }
 
 /*
 int getValueAtPosition(LinkedList_t *list, int position) {
@@ -111,28 +114,48 @@ void addAtTail(LinkedList_t *list, int newValue) {
 }
 
 void addAfter(LinkedList_t *list, int key, int newValue) {
+  _Node_t *foundNode = _searchForNode(list, key);
 
+  if (foundNode == NULL) {
+    _throwError("There are no matches for provided key.Could't add new value");
+    return;
+  }
+
+  if (foundNode->previous == NULL) {
+    addAtHead(list, newValue);
+    return;
+  }
+
+  _Node_t *newNode = _createNode(newValue);
+  newNode->next = foundNode->next;
+  foundNode->next = newNode;
 }
 
 void addBefore(LinkedList_t *list, int key, int newValue) {
+  _Node_t *foundNode = _searchForNode(list, key);
 
+  if (foundNode == NULL) {
+    _throwError("There are no matches for provided key.Could't add new value");
+    return;
+  }
+
+  if (foundNode->previous == NULL) {
+    addAtHead(list, newValue);
+    return;
+  }
+
+  _Node_t *newNode = _createNode(newValue);
+  foundNode->previous->next = newNode;
+  newNode->next = foundNode;
 }
 
-void deleteHead(LinkedList_t *list) {
+void deleteHead(LinkedList_t *list) {}
 
-}
+void deleteTail(LinkedList_t *list) {}
 
-void deleteTail(LinkedList_t *list) {
+void deleteSpecificNode(LinkedList_t *list, int key) {}
 
-}
-
-void deleteSpecificNode(LinkedList_t *list, int key) {
-
-}
-
-void deleteAtPosition(LinkedList_t *list, int position) {
-
-}
+void deleteAtPosition(LinkedList_t *list, int position) {}
 
 void displayLinkedList(LinkedList_t *list) {
   _Node_t *current = list->head;
@@ -175,4 +198,3 @@ void freeLinkedList(LinkedList_t *list) {
   }
   free(list);
 }
-

@@ -15,7 +15,9 @@ struct _linkedStack {
 // private functions
 void _checkAllocation(void *pointer) {
   if (pointer == NULL) {
+    printf("\033[1;35m");
     printf("Allocation failed!");
+    printf("\033[0m");
     exit(1);
   }
 }
@@ -57,7 +59,9 @@ void push(LinkedStack_t *stack, int newValue) {
 
 void pop(LinkedStack_t *stack) {
   if (isEmpty(stack)) {
+    printf("\033[1;35m");
     printf("Your stack is empty!");
+    printf("\033[0m");
     return;
   }
 
@@ -69,10 +73,12 @@ void pop(LinkedStack_t *stack) {
 void displayStack(LinkedStack_t *stack) {
   _StackNode_t *current = stack->head;
 
+  printf("\033[1;36m");
   while (current != NULL) {
     printf("[ %d ]\n", current->data);
     current = current->next;
   }
+  printf("\033[0m");
 }
 
 void freeStack(LinkedStack_t *stack) {

@@ -8,10 +8,10 @@ int main(void)  {
   Stack_t *myStack = createEmptyStack(10);
 
   // adding some data to stack
-  push(myStack, 30);
-  push(myStack, 43);
-  push(myStack, 94);
-  push(myStack, 53);
+  push(myStack, 1);
+  push(myStack, 2);
+  push(myStack, 3);
+  push(myStack, 4);
 
   // displaying stack
   printf("\nOriginal Stack:\n");

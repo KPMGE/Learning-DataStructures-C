@@ -6,10 +6,10 @@ int main(void) {
   LinkedStack_t *myStack = createEmptyStack();
 
   // adding some data into stack
-  push(myStack, 10);
-  push(myStack, 53);
-  push(myStack, 84);
-  push(myStack, 64);
+  push(myStack, 1);
+  push(myStack, 2);
+  push(myStack, 3);
+  push(myStack, 4);
 
   // displaying it
   printf("\nOrignal stack:\n");

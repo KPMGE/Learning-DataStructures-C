@@ -1,5 +1,4 @@
 #include "../include/linked-list.h"
-#include "../include/colors.h"
 #include <stdio.h>
 #include <stdlib.h>
 
@@ -17,17 +16,10 @@ struct _linkedList {
 // private functions
 void _checkAllocation(void *pointer) {
   if (pointer == NULL) {
-    #ifdef COLORS_H
-      purple();
-    #endif
-
+    printf("\033[1;35m");
     printf("Allocation failed!");
-
-    #ifdef COLORS_H
-      reset();
-    #endif
-
     exit(1);
+    printf("\033[0m");
   }
 }
 
@@ -102,15 +94,9 @@ void addAfter(LinkedList_t *list, int searchNumber, int newNumber) {
 
   // if there are no matches
   if (previous == NULL) {
-    #ifdef COLORS_H
-      purple();
-    #endif
-
+    printf("\033[1;35m");
     printf("There is no Node for the provided number");
-
-    #ifdef COLORS_H
-      reset();
-    #endif
+    printf("\033[0m");
 
     exit(1);
   }
@@ -143,15 +129,9 @@ void addAtTail(LinkedList_t *list, int number) {
 
 void deleteHeadNode(LinkedList_t *list) {
   if (list->head == NULL) {
-    #ifdef COLORS_H
-      purple();
-    #endif
-
+    printf("\033[1;35m");
     printf("The list is empty.");
-
-    #ifdef COLORS_H
-      reset();
-    #endif
+    printf("\033[0m");
 
     return;
   }
@@ -163,15 +143,9 @@ void deleteHeadNode(LinkedList_t *list) {
 
 void deleteTailNode(LinkedList_t *list) {
   if (list->tail == NULL) {
-    #ifdef COLORS_H
-      purple();
-    #endif
-
+    printf("\033[1;35m");
     printf("The list is empty.");
-
-    #ifdef COLORS_H
-      reset();
-    #endif
+    printf("\033[0m");
 
     return;
   }
@@ -198,16 +172,10 @@ void deleteTailNode(LinkedList_t *list) {
 void deleteSpecificNode(LinkedList_t *list, int key) {
   Node_t *current = _getNode(list, key);
   if (current == NULL) {
-
-    #ifdef COLORS_H
-      purple();
-    #endif
-
+    printf("\033[1;35m");
     printf("There are no matches for provided key.");
+    printf("\033[0m");
 
-    #ifdef COLORS_H
-      reset();
-    #endif
     return;
   }
 
@@ -219,16 +187,9 @@ void deleteSpecificNode(LinkedList_t *list, int key) {
 
   Node_t *previous = _getPreviousNode(list, key);
   if (previous == NULL) {
-
-    #ifdef COLORS_H
-      purple();
-    #endif
-
+    printf("\033[1;35m");
     printf("You can't delete a NULL node.");
-
-    #ifdef COLORS_H
-      reset();
-    #endif
+    printf("\033[0m");
 
     return;
   }
@@ -251,15 +212,9 @@ void deleteAtPosition(LinkedList_t *list, int position) {
 
   // if invalid position was provided
   if (current == NULL || current->next == NULL) {
-    #ifdef COLORS_H
-      purple();
-    #endif
-
+    printf("\033[1;35m");
     printf("Invalid position.\n");
-
-    #ifdef COLORS_H
-      reset();
-    #endif
+    printf("\033[0m");
 
     return;
   }
@@ -272,26 +227,16 @@ void deleteAtPosition(LinkedList_t *list, int position) {
 void displayLinkedList(LinkedList_t *list) {
   Node_t *current = list->head;
 
-  // if colors defined
-  #ifdef COLORS_H
-    cyan();
-  #endif
-
-  while (current != NULL) {
+  printf("\033[1;36m");
+   while (current != NULL) {
     printf("%d -> ", current->data);
     current = current->next;
   }
+  printf("\033[0m");
 
-  #ifdef COLORS_H
-    purple();
-  #endif
-
+  printf("\033[1;35m");
   printf("NULL");
-
-  #ifdef COLORS_H
-    reset();
-  #endif
-
+  printf("\033[0m");
 }
 
 void freeList(LinkedList_t *list) {

@@ -1,5 +1,5 @@
 #include <stdio.h>
-#include "../include/queue.h"
+#include "../include/queue-arrays.h"
 
 int main(void) {
   Queue_t *myQueue = createQueue(10);

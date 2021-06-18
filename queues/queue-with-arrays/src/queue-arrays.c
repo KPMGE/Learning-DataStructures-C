@@ -2,7 +2,7 @@
 #include <stdlib.h>
 #include <stdbool.h>
 #include <limits.h>
-#include "../include/queue.h"
+#include "../include/queue-arrays.h"
 
   struct _queue {
     int head;

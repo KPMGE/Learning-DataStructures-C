@@ -19,6 +19,14 @@ int main(void) {
   addAtTail(myList, 90);
   displayList(myList);
 
+  printf("\nAfter delete head: ");
+  deleteHead(myList);
+  displayList(myList);
+
+  printf("\nAfter delete tail: ");
+  deleteTail(myList);
+  displayList(myList);
+
   freeList(myList);
 
   return 0;

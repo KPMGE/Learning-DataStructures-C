@@ -46,8 +46,7 @@ bool _isEmpty(CircularList_t *list) {
 
 // public functions
 CircularList_t *createEmptyList() {
-  CircularList_t *allocatedList =
-      (CircularList_t *)malloc(sizeof(CircularList_t));
+  CircularList_t *allocatedList = (CircularList_t *)malloc(sizeof(CircularList_t));
 
   _checkAllocation(allocatedList);
 
@@ -78,8 +77,36 @@ void addAtTail(CircularList_t *list, int newValue) {
 }
 
 
-void deleteHead(CircularList_t *list) {}
-void deleteTail(CircularList_t *list) {}
+void deleteHead(CircularList_t *list) {
+  if (_isEmpty(list)) {
+    _throwError("The list is empty");
+    return;
+  }
+
+  _Node_t *head = list->tail->next;
+  list->tail->next = head->next;
+  free(head);
+}
+
+void deleteTail(CircularList_t *list) {
+  if (_isEmpty(list)) {
+    _throwError("The list is empty");
+    return;
+  }
+
+  // finding previous node
+  _Node_t *current = list->tail->next;
+  _Node_t *previous = list->tail;
+
+  while (current != list->tail) {
+    current = current->next;
+    previous = previous->next;
+  }
+
+  previous->next = list->tail->next;
+  free(list->tail);
+  list->tail = previous;
+}
 
 void displayList(CircularList_t *list) {
   _Node_t *current = list->tail->next;

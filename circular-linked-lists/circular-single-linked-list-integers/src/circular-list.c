@@ -131,11 +131,12 @@ void displayList(CircularList_t *list) {
 void freeList(CircularList_t *list) {
   _Node_t *current = list->tail->next;
 
-  do {
+  while (current != list->tail) {
     _Node_t *aux = current;
     current = current->next;
     free(aux);
-  } while (current->next != list->tail->next);
+ }
 
+  free(list->tail);
   free(list);
 }

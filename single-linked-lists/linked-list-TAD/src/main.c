@@ -1,4 +1,4 @@
-// Simple program to show how to delete nodes in a single linked list
+// Simple implementation of a single linked list in C
 // Author: Kevin Carvalho de Jesus
 
 #include <stdio.h>

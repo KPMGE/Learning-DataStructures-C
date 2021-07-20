@@ -8,9 +8,10 @@ int main(void) {
   LinkedList_t *myList = createEmptyList();
 
   // add some data into list
-  addAtHead(myList, 9);
+  addAtHead(myList, 1);
   addAtTail(myList, 5);
-  addAtTail(myList, 1);
+  addAtTail(myList, 9);
+  addAtTail(myList, 23);
 
   // display original list
   printf("\nOriginal list: ");
@@ -27,7 +28,7 @@ int main(void) {
   addBefore(myList, 5, 80);
   displayLinkedList(myList);
 
-  printf("\nValue at position 2: %d", getValueAtPosition(myList, 2));
+  printf("\nValue at position 1: %d", getValueAtPosition(myList, 1));
   
   int *arr = convertIntoArray(myList);
   displayArray(arr, 5);
@@ -40,12 +41,12 @@ int main(void) {
   deleteTail(myList);
   displayLinkedList(myList);
 
-  printf("\nDelete at position 1: ");
-  deleteAtPosition(myList, 1);
+  printf("\nDelete at position 0: ");
+  deleteAtPosition(myList, 0);
   displayLinkedList(myList);
 
-  printf("\nDelete node with value 200: ");
-  deleteNodeWithKey(myList, 200);
+  printf("\nDelete node with value 5: ");
+  deleteNodeWithKey(myList, 5);
   displayLinkedList(myList);
 
   // free allocated list

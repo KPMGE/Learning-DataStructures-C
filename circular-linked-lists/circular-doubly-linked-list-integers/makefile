@@ -1,7 +1,7 @@
 SRC          = ./src
 INCLUDE      = ./include
 OBJ          = ./obj
-NAME_PROGRAM = linked-list.exe # must end with .exe
+NAME_PROGRAM = doubly-circular-linked-list.exe # must end with .exe
 FLAGS        = -lm -pedantic -Wall -std=c99
 COMPILER     = gcc   
 
@@ -13,7 +13,7 @@ test: clean all run
 # all target files
 libed: \
 	${OBJ}/main.o\
-	${OBJ}/linked-list.o\
+	${OBJ}/doubly-circular-linked-list.o\
 
 createFinalProgam: ${NAME_PROGRAM}
 
@@ -56,4 +56,3 @@ clean:
 	@ echo "Removing files..."
 	@ rm -rf ${OBJ} ${NAME_PROGRAM}
 	@ echo "\033[0m"
-

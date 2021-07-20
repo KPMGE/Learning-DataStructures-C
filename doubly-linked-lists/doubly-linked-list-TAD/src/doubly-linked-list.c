@@ -34,10 +34,12 @@ void _throwError(char *message) {
 }
 
 _Node_t *_createNode(int value) {
-  _Node_t *allocatedNode = (_Node_t *)malloc(sizeof(_Node_t));
-
+  _Node_t *allocatedNode = (_Node_t*) malloc(sizeof(_Node_t));
   _checkAllocation(allocatedNode);
+
   allocatedNode->data = value;
+  allocatedNode->next = NULL;
+  allocatedNode->previous = NULL;
 
   return allocatedNode;
 }
@@ -65,8 +67,8 @@ _Node_t *_getNodeAtPosition(LinkedList_t *list, int position) {
       return current;
     }
 
-    i++;
     current = current->next;
+    i++;
   }
 
   return NULL;
@@ -142,7 +144,6 @@ int* convertIntoArray(LinkedList_t *list) {
 
 void addAtHead(LinkedList_t *list, int newValue) {
   _Node_t *newNode = _createNode(newValue);
-  newNode->previous = NULL;
 
   if (_isEmpty(list)) {
     list->head = newNode;
@@ -151,12 +152,12 @@ void addAtHead(LinkedList_t *list, int newValue) {
   }
 
   newNode->next = list->head;
+  list->head->previous = newNode;
   list->head = newNode;
 }
 
 void addAtTail(LinkedList_t *list, int newValue) {
   _Node_t *newNode = _createNode(newValue);
-  newNode->next = NULL;
 
   if (_isEmpty(list)) {
     list->head = newNode;
@@ -173,7 +174,7 @@ void addAfter(LinkedList_t *list, int key, int newValue) {
   _Node_t *foundNode = _searchForNode(list, key);
 
   if (foundNode == NULL) {
-    _throwError("There are no matches for provided key. Could't add new value");
+    _throwError("There are no matches for provided key. Couldn't add new value");
     return;
   }
 
@@ -182,17 +183,23 @@ void addAfter(LinkedList_t *list, int key, int newValue) {
     return;
   }
 
+  if (foundNode->next == NULL) {
+    addAtTail(list, newValue);
+    return;
+  }
+
   _Node_t *newNode = _createNode(newValue);
+
   newNode->next = foundNode->next;
+  newNode->previous = foundNode;
   foundNode->next = newNode;
-  newNode->previous = foundNode->previous;
 }
 
 void addBefore(LinkedList_t *list, int key, int newValue) {
   _Node_t *foundNode = _searchForNode(list, key);
 
   if (foundNode == NULL) {
-    _throwError("There are no matches for provided key. Could't add new value");
+    _throwError("There are no matches for provided key. Couldn't add new value");
     return;
   }
 
@@ -201,9 +208,15 @@ void addBefore(LinkedList_t *list, int key, int newValue) {
     return;
   }
 
+  if (foundNode->next == NULL) {
+    addAtTail(list, newValue);
+    return;
+  }
+
   _Node_t *newNode = _createNode(newValue);
-  foundNode->previous->next = newNode;
   newNode->next = foundNode;
+  newNode->previous = foundNode->previous;
+  foundNode->previous->next = newNode;
 }
 
 void deleteHead(LinkedList_t *list) {
@@ -225,7 +238,7 @@ void deleteTail(LinkedList_t *list) {
   }
 
   _Node_t *aux = list->tail;
-  list->tail->previous->next->next = NULL;
+  list->tail->previous->next = NULL;
   free(aux);
 }
 
@@ -233,7 +246,7 @@ void deleteNodeWithKey(LinkedList_t *list, int key) {
   _Node_t *foundNode = _searchForNode(list, key);
 
   if (foundNode == NULL) {
-    _throwError("There are no matches for provided key. Could't delete value");
+    _throwError("There are no matches for provided key. Couldn't delete value");
     return;
   }
 
@@ -242,7 +255,12 @@ void deleteNodeWithKey(LinkedList_t *list, int key) {
     return;
   }
 
-  foundNode->previous->next->next = foundNode->next;
+  if (foundNode->next == NULL) {
+    deleteTail(list);
+  }
+
+  foundNode->previous->next = foundNode->next;
+  foundNode->next->previous = foundNode->previous;
   free(foundNode);
 }
 
@@ -250,7 +268,7 @@ void deleteAtPosition(LinkedList_t *list, int position) {
   _Node_t *foundNode = _getNodeAtPosition(list, position);
 
   if (foundNode == NULL) {
-    _throwError("There are no matches for provided key. Could't delete value");
+    _throwError("There are no matches for provided key. Couldn't delete value");
     return;
   }
 
@@ -259,7 +277,13 @@ void deleteAtPosition(LinkedList_t *list, int position) {
     return;
   }
 
-  foundNode->previous->next->next = foundNode->next;
+  if (foundNode->next == NULL) {
+    deleteTail(list);
+    return;
+  }
+
+  foundNode->previous->next = foundNode->next;
+  foundNode->next->previous = foundNode->previous;
   free(foundNode);
 }
 
@@ -282,11 +306,10 @@ void displayLinkedListReverse(LinkedList_t *list) {
   _Node_t *current = list->tail;
 
   printf("\033[1;36m");
-  while (current->previous != NULL) {
+  while (current != NULL) {
     printf("%d -> ", current->data);
     current = current->previous;
   }
-  printf("%d -> ", current->data);
   printf("\033[0m");
 
   printf("\033[1;35m");

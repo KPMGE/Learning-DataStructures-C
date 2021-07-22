@@ -81,7 +81,7 @@ bool _isEmpty(LinkedList_t *list) {
 
 // public functions
 LinkedList_t *createEmptyList() {
-  LinkedList_t *allocatedList = (LinkedList_t *)malloc(sizeof(LinkedList_t));
+  LinkedList_t *allocatedList = (LinkedList_t *) malloc(sizeof(LinkedList_t));
 
   _checkAllocation(allocatedList);
 
@@ -192,6 +192,7 @@ void addAfter(LinkedList_t *list, int key, int newValue) {
 
   newNode->next = foundNode->next;
   newNode->previous = foundNode;
+  foundNode->next->previous = newNode;
   foundNode->next = newNode;
 }
 
@@ -214,9 +215,10 @@ void addBefore(LinkedList_t *list, int key, int newValue) {
   }
 
   _Node_t *newNode = _createNode(newValue);
-  newNode->next = foundNode;
-  newNode->previous = foundNode->previous;
   foundNode->previous->next = newNode;
+  newNode->previous = foundNode->previous;
+  newNode->next = foundNode;
+  foundNode->previous = newNode;
 }
 
 void deleteHead(LinkedList_t *list) {
@@ -225,9 +227,16 @@ void deleteHead(LinkedList_t *list) {
     return;
   }
 
+  if (list->head->next == NULL)  {
+    free(list->head);
+    list->head = NULL;
+    list->tail = NULL;
+    return;
+  }
+
   _Node_t *aux = list->head;
+  list->head->next->previous = NULL;
   list->head = list->head->next;
-  list->head->previous = NULL;
   free(aux);
 }
 
@@ -237,8 +246,16 @@ void deleteTail(LinkedList_t *list) {
     return;
   }
 
+  if (list->head->next == NULL) {
+    free(list->head);
+    list->head = NULL;
+    list->tail = NULL;
+    return;
+  }
+
   _Node_t *aux = list->tail;
   list->tail->previous->next = NULL;
+  list->tail = list->tail->previous;
   free(aux);
 }
 
@@ -257,6 +274,7 @@ void deleteNodeWithKey(LinkedList_t *list, int key) {
 
   if (foundNode->next == NULL) {
     deleteTail(list);
+    return;
   }
 
   foundNode->previous->next = foundNode->next;

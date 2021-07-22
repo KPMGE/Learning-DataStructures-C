@@ -27,8 +27,6 @@ int main(void) {
   printf("\nAdd 80 before 5: ");
   addBefore(myList, 5, 80);
   displayLinkedList(myList);
-
-  printf("\nValue at position 1: %d", getValueAtPosition(myList, 1));
   
   int *arr = convertIntoArray(myList);
   displayArray(arr, 5);
@@ -41,13 +39,15 @@ int main(void) {
   deleteTail(myList);
   displayLinkedList(myList);
 
-  printf("\nDelete at position 0: ");
-  deleteAtPosition(myList, 0);
+  printf("\nDelete at position 1: ");
+  deleteAtPosition(myList, 1);
   displayLinkedList(myList);
 
-  printf("\nDelete node with value 5: ");
-  deleteNodeWithKey(myList, 5);
+  printf("\nDelete node with value 200: ");
+  deleteNodeWithKey(myList, 200);
   displayLinkedList(myList);
+
+  printf("\nValue at position 1: %d", getValueAtPosition(myList, 1));
 
   // free allocated list
   freeLinkedList(myList);

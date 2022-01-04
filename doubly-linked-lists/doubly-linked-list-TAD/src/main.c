@@ -47,13 +47,11 @@ int main(void) {
   list_delete_key(myList, 200);
   list_display(myList);
 
-  printf("\nValue at position 1: %d", list_get_at_position(myList, 1));
+  printf("\nValue at position 1: %d\n", list_get_at_position(myList, 1));
 
   // free allocated list
   list_free(myList);
   free(arr);
-
-  return 0;
 }
 
 void display_array(int *array, int size) {

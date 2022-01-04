@@ -24,17 +24,15 @@ static node *node_new(int value) {
   node *new_node = malloc(sizeof(node));
   check_allocation(new_node, "Allocation error at 'node_new'");
 
-  new_node->data = value;
-  new_node->next = NULL;
-  new_node->previous = NULL;
+  *new_node = (node){.data = value, .next = NULL, .previous = NULL};
 
   return new_node;
 }
 
-static node *find_node(linked_list *list, int key) {
+static node *node_find(linked_list *list, int key) {
   node *current = list->head;
 
-  while (current != NULL) {
+  while (current) {
     if (current->data == key) {
       return current;
     }
@@ -45,11 +43,11 @@ static node *find_node(linked_list *list, int key) {
   return NULL;
 }
 
-static node *get_node_at_position(linked_list *list, int position) {
+static node *node_get_position(linked_list *list, int position) {
   int i = 0;
   node *current = list->head;
 
-  while (current != NULL) {
+  while (current) {
     if (i == position) {
       return current;
     }
@@ -62,7 +60,7 @@ static node *get_node_at_position(linked_list *list, int position) {
 }
 
 static bool list_is_empty(linked_list *list) {
-  return (list->head == NULL) ? true : false;
+  return (!list->head) ? true : false;
 }
 
 // public functions
@@ -70,9 +68,7 @@ linked_list *list_new() {
   linked_list *new_list = malloc(sizeof(linked_list));
 
   check_allocation(new_list, "Allocation error at 'list_new'");
-
-  new_list->head = NULL;
-  new_list->tail = NULL;
+  *new_list = (linked_list){.head = NULL, .tail = NULL};
 
   return new_list;
 }
@@ -89,7 +85,7 @@ int list_get_at_position(linked_list *list, int position) {
   int count = 0;
   node *current = list->head;
 
-  while (current != NULL) {
+  while (current) {
     if (count == position) {
       return current->data;
     }
@@ -113,7 +109,7 @@ int *list_to_array(linked_list *list) {
 
   int pos = 0;
   node *current = list->head;
-  while (current != NULL) {
+  while (current) {
     array = realloc(array, (pos + 1) * sizeof(int));
     array[pos] = list_get_at_position(list, pos);
     pos++;
@@ -124,8 +120,8 @@ int *list_to_array(linked_list *list) {
   return array;
 }
 
-void list_add_head(linked_list *list, int newValue) {
-  node *newnode = node_new(newValue);
+void list_add_head(linked_list *list, int new_value) {
+  node *newnode = node_new(new_value);
 
   if (list_is_empty(list)) {
     list->head = newnode;
@@ -138,8 +134,8 @@ void list_add_head(linked_list *list, int newValue) {
   list->head = newnode;
 }
 
-void list_add_tail(linked_list *list, int newValue) {
-  node *newnode = node_new(newValue);
+void list_add_tail(linked_list *list, int new_value) {
+  node *newnode = node_new(new_value);
 
   if (list_is_empty(list)) {
     list->head = newnode;
@@ -152,57 +148,57 @@ void list_add_tail(linked_list *list, int newValue) {
   list->tail = newnode;
 }
 
-void list_add_after(linked_list *list, int key, int newValue) {
-  node *foundnode = find_node(list, key);
+void list_add_after(linked_list *list, int key, int new_value) {
+  node *found_node = node_find(list, key);
 
-  if (foundnode == NULL) {
+  if (!found_node) {
     throw_error(
         "There are no matches for provided key. Couldn't add new value");
     return;
   }
 
-  if (foundnode->previous == NULL) {
-    list_add_head(list, newValue);
+  if (!found_node->previous) {
+    list_add_head(list, new_value);
     return;
   }
 
-  if (foundnode->next == NULL) {
-    list_add_tail(list, newValue);
+  if (!found_node->next) {
+    list_add_tail(list, new_value);
     return;
   }
 
-  node *newnode = node_new(newValue);
+  node *newnode = node_new(new_value);
 
-  newnode->next = foundnode->next;
-  newnode->previous = foundnode;
-  foundnode->next->previous = newnode;
-  foundnode->next = newnode;
+  newnode->next = found_node->next;
+  newnode->previous = found_node;
+  found_node->next->previous = newnode;
+  found_node->next = newnode;
 }
 
-void list_add_before(linked_list *list, int key, int newValue) {
-  node *foundnode = find_node(list, key);
+void list_add_before(linked_list *list, int key, int new_value) {
+  node *found_node = node_find(list, key);
 
-  if (foundnode == NULL) {
+  if (!found_node) {
     throw_error(
         "There are no matches for provided key. Couldn't add new value");
     return;
   }
 
-  if (foundnode->previous == NULL) {
-    list_add_head(list, newValue);
+  if (!found_node->previous) {
+    list_add_head(list, new_value);
     return;
   }
 
-  if (foundnode->next == NULL) {
-    list_add_tail(list, newValue);
+  if (!found_node->next) {
+    list_add_tail(list, new_value);
     return;
   }
 
-  node *newnode = node_new(newValue);
-  foundnode->previous->next = newnode;
-  newnode->previous = foundnode->previous;
-  newnode->next = foundnode;
-  foundnode->previous = newnode;
+  node *newnode = node_new(new_value);
+  found_node->previous->next = newnode;
+  newnode->previous = found_node->previous;
+  newnode->next = found_node;
+  found_node->previous = newnode;
 }
 
 void list_delete_head(linked_list *list) {
@@ -211,7 +207,7 @@ void list_delete_head(linked_list *list) {
     return;
   }
 
-  if (list->head->next == NULL) {
+  if (!list->head->next) {
     free(list->head);
     list->head = NULL;
     list->tail = NULL;
@@ -230,7 +226,7 @@ void list_delete_tail(linked_list *list) {
     return;
   }
 
-  if (list->head->next == NULL) {
+  if (!list->head->next) {
     free(list->head);
     list->head = NULL;
     list->tail = NULL;
@@ -244,56 +240,56 @@ void list_delete_tail(linked_list *list) {
 }
 
 void list_delete_key(linked_list *list, int key) {
-  node *foundnode = find_node(list, key);
+  node *found_node = node_find(list, key);
 
-  if (foundnode == NULL) {
+  if (!found_node) {
     throw_error("There are no matches for provided key. Couldn't delete value");
     return;
   }
 
-  if (foundnode->previous == NULL) {
+  if (!found_node->previous) {
     list_delete_head(list);
     return;
   }
 
-  if (foundnode->next == NULL) {
+  if (!found_node->next) {
     list_delete_tail(list);
     return;
   }
 
-  foundnode->previous->next = foundnode->next;
-  foundnode->next->previous = foundnode->previous;
-  free(foundnode);
+  found_node->previous->next = found_node->next;
+  found_node->next->previous = found_node->previous;
+  free(found_node);
 }
 
 void list_delete_position(linked_list *list, int position) {
-  node *foundnode = get_node_at_position(list, position);
+  node *found_node = node_get_position(list, position);
 
-  if (foundnode == NULL) {
+  if (!found_node) {
     throw_error("There are no matches for provided key. Couldn't delete value");
     return;
   }
 
-  if (foundnode->previous == NULL) {
+  if (!found_node->previous) {
     list_delete_head(list);
     return;
   }
 
-  if (foundnode->next == NULL) {
+  if (!found_node->next) {
     list_delete_tail(list);
     return;
   }
 
-  foundnode->previous->next = foundnode->next;
-  foundnode->next->previous = foundnode->previous;
-  free(foundnode);
+  found_node->previous->next = found_node->next;
+  found_node->next->previous = found_node->previous;
+  free(found_node);
 }
 
 void list_display(linked_list *list) {
   node *current = list->head;
 
   printf("\033[1;36m");
-  while (current != NULL) {
+  while (current) {
     printf("%d -> ", current->data);
     current = current->next;
   }
@@ -308,7 +304,7 @@ void list_display_reverse(linked_list *list) {
   node *current = list->tail;
 
   printf("\033[1;36m");
-  while (current != NULL) {
+  while (current) {
     printf("%d -> ", current->data);
     current = current->previous;
   }
@@ -322,7 +318,7 @@ void list_display_reverse(linked_list *list) {
 void list_free(linked_list *list) {
   node *current = list->head;
 
-  while (current != NULL) {
+  while (current) {
     node *aux = current;
     current = current->next;
     free(aux);

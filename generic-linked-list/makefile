@@ -1,7 +1,7 @@
 SRC          = ./src
 INCLUDE      = ./include
 OBJ          = ./obj
-NAME_PROGRAM = students.exe # must end with .exe
+NAME_PROGRAM = generic.exe # must end with .exe
 FLAGS        = -lm -pedantic -Wall 
 COMPILER     = gcc   
 
@@ -14,6 +14,7 @@ test: clean all run
 libed: \
 	${OBJ}/main.o\
 	${OBJ}/student.o\
+	${OBJ}/utils.o\
 	${OBJ}/generic-list.o\
 	${OBJ}/students-list.o\
 

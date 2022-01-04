@@ -1,38 +1,31 @@
+#include "../include/generic-list.h"
+#include "../include/utils.h"
 #include <stdio.h>
 #include <stdlib.h>
-#include "../include/generic-list.h"
 
 typedef struct node {
   void *data;
   struct node *next;
-} Node;
+} node;
 
-struct generic_list {
-  Node *head;
-  Node *tail;
+struct list {
+  node *head;
+  node *tail;
 };
 
-List *create_empty_list(void) {
-  List *list = (List *) malloc(sizeof(List));
+list *list_new(void) {
+  list *new = malloc(sizeof(list));
 
-  if (!list) {
-    printf("Allocation error at create_empty_list!");
-    exit(1);
-  }
+  check_allocation(new, "allocation error at 'list_new'");
+  new->head = NULL;
 
-  list->head = NULL;
-
-  return list;
+  return new;
 }
 
-void insert_head(List *list, void *data) {
-  Node *new = (Node *) malloc(sizeof(Node));
+void list_add_head(list *list, void *data) {
+  node *new = malloc(sizeof(node));
 
-  if (!new) {
-    printf("Allocation error at insert!");
-    exit(1);
-  }
-
+  check_allocation(new, "allocation error at 'list_add_head'");
   new->next = NULL;
   new->data = data;
 
@@ -45,14 +38,10 @@ void insert_head(List *list, void *data) {
   list->head = new;
 }
 
-void insert_tail(List *list, void *data) {
-  Node *new = (Node *) malloc(sizeof(Node));
+void list_add_tail(list *list, void *data) {
+  node *new = malloc(sizeof(node));
 
-  if (!new) {
-    printf("Allocation error at insert!");
-    exit(1);
-  }
-
+  check_allocation(new, "allocation error at 'list_add_tail'");
   new->next = NULL;
   new->data = data;
 
@@ -64,9 +53,9 @@ void insert_tail(List *list, void *data) {
   list->tail->next = new;
 }
 
-void remove_list(List *list, int (*cpr_func)(void*, void*), void *item) {
-  Node *prev = NULL;
-  Node *aux = list->head;
+void list_remove(list *list, int (*cpr_func)(void *, void *), void *item) {
+  node *prev = NULL;
+  node *aux = list->head;
 
   while (aux && cpr_func(aux->data, item)) {
     prev = aux;
@@ -89,8 +78,8 @@ void remove_list(List *list, int (*cpr_func)(void*, void*), void *item) {
   free(aux);
 }
 
-int walk_through_list(List *list, int (*callback)(void*, void*), void *data) {
-  Node *current = list->head;
+int list_walk_through(list *list, int (*callback)(void *, void *), void *data) {
+  node *current = list->head;
 
   while (current) {
     if (!callback(current->data, data)) {
@@ -102,11 +91,11 @@ int walk_through_list(List *list, int (*callback)(void*, void*), void *data) {
   return 1;
 }
 
-void free_list(List *list) {
-  Node *current = list->head;
+void list_free(list *list) {
+  node *current = list->head;
 
   while (current) {
-    Node *aux = current;
+    node *aux = current;
     current = current->next;
     free(aux);
   }

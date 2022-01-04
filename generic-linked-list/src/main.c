@@ -8,7 +8,7 @@ int main(void) {
   Student *laura = create_student("Laura", 51433,  5, 9, 4);
   Student *karol = create_student("Karol", 83242,  9, 5, 7);
 
-  StudentsList *list = create_students_list();
+  Studentslist *list = create_students_list();
 
   insert_student_at_head(list, kevin);
   insert_student_at_head(list, luana);

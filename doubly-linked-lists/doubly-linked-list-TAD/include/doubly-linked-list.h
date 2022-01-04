@@ -1,24 +1,24 @@
 #ifndef DOUBLY_LINKED_LIST_H
 #define DOUBLY_LINKED_LIST_H
 
-typedef struct _linkedList LinkedList_t;
+typedef struct linked_list linked_list;
 
 // functions for linked list
-LinkedList_t *createEmptyList();
-int getHeadValue(LinkedList_t *list);
-int getTailValue(LinkedList_t *list);
-int getValueAtPosition(LinkedList_t *list, int position);
-int* convertIntoArray(LinkedList_t *list);
-void addAtHead(LinkedList_t *list, int newValue);
-void addAtTail(LinkedList_t *list, int newValue);
-void addAfter(LinkedList_t *list, int key, int newValue);
-void addBefore(LinkedList_t *list, int key, int newValue);
-void deleteHead(LinkedList_t *list);
-void deleteTail(LinkedList_t *list);
-void deleteNodeWithKey(LinkedList_t *list, int key);
-void deleteAtPosition(LinkedList_t *list, int position);
-void displayLinkedList(LinkedList_t *list);
-void displayLinkedListReverse(LinkedList_t *list);
-void freeLinkedList(LinkedList_t *list);
+linked_list *list_new();
+int list_get_head(linked_list *list);
+int list_get_tail(linked_list *list);
+int list_get_at_position(linked_list *list, int position);
+int *list_to_array(linked_list *list);
+void list_add_head(linked_list *list, int newValue);
+void list_add_tail(linked_list *list, int newValue);
+void list_add_after(linked_list *list, int key, int newValue);
+void list_add_before(linked_list *list, int key, int newValue);
+void list_delete_head(linked_list *list);
+void list_delete_tail(linked_list *list);
+void list_delete_key(linked_list *list, int key);
+void list_delete_position(linked_list *list, int position);
+void list_display(linked_list *list);
+void list_display_reverse(linked_list *list);
+void list_free(linked_list *list);
 
 #endif

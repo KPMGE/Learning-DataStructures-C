@@ -1,62 +1,62 @@
+#include "../include/doubly-linked-list.h"
 #include <stdio.h>
 #include <stdlib.h>
-#include "../include/doubly-linked-list.h"
 
-void displayArray(int *array, int size);
+void display_array(int *array, int size);
 
 int main(void) {
-  LinkedList_t *myList = createEmptyList();
+  linked_list *myList = list_new();
 
   // add some data into list
-  addAtHead(myList, 1);
-  addAtTail(myList, 5);
-  addAtTail(myList, 9);
-  addAtTail(myList, 23);
+  list_add_head(myList, 1);
+  list_add_tail(myList, 5);
+  list_add_tail(myList, 9);
+  list_add_tail(myList, 23);
 
   // display original list
   printf("\nOriginal list: ");
-  displayLinkedList(myList);
+  list_display(myList);
 
   printf("\nOriginal list in reverse order: ");
-  displayLinkedListReverse(myList);
+  list_display_reverse(myList);
 
   printf("\nAdd 200 after 5: ");
-  addAfter(myList, 5, 200);
-  displayLinkedList(myList);
+  list_add_after(myList, 5, 200);
+  list_display(myList);
 
   printf("\nAdd 80 before 5: ");
-  addBefore(myList, 5, 80);
-  displayLinkedList(myList);
-  
-  int *arr = convertIntoArray(myList);
-  displayArray(arr, 5);
+  list_add_before(myList, 5, 80);
+  list_display(myList);
+
+  int *arr = list_to_array(myList);
+  display_array(arr, 5);
 
   printf("\nDelete head: ");
-  deleteHead(myList);
-  displayLinkedList(myList);
+  list_delete_head(myList);
+  list_display(myList);
 
   printf("\nDelete tail: ");
-  deleteTail(myList);
-  displayLinkedList(myList);
+  list_delete_tail(myList);
+  list_display(myList);
 
   printf("\nDelete at position 1: ");
-  deleteAtPosition(myList, 1);
-  displayLinkedList(myList);
+  list_delete_position(myList, 1);
+  list_display(myList);
 
   printf("\nDelete node with value 200: ");
-  deleteNodeWithKey(myList, 200);
-  displayLinkedList(myList);
+  list_delete_key(myList, 200);
+  list_display(myList);
 
-  printf("\nValue at position 1: %d", getValueAtPosition(myList, 1));
+  printf("\nValue at position 1: %d", list_get_at_position(myList, 1));
 
   // free allocated list
-  freeLinkedList(myList);
+  list_free(myList);
   free(arr);
 
   return 0;
 }
 
-void displayArray(int *array, int size) {
+void display_array(int *array, int size) {
   printf("\nArray: ");
 
   printf("\033[1;36m");

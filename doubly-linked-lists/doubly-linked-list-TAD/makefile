@@ -14,6 +14,7 @@ test: clean all run
 libed: \
 	${OBJ}/main.o\
 	${OBJ}/doubly-linked-list.o\
+	${OBJ}/utils.o\
 
 createFinalProgam: ${NAME_PROGRAM}
 

@@ -1,51 +1,38 @@
 #include "../include/doubly-linked-list.h"
-#include <stdio.h>
+#include "../include/utils.h"
 #include <math.h>
 #include <stdbool.h>
+#include <stdio.h>
 #include <stdlib.h>
 
 // private structure for a node
-typedef struct _node {
+typedef struct node {
   int data;
-  struct _node *previous;
-  struct _node *next;
-} _Node_t;
+  struct node *previous;
+  struct node *next;
+} node;
 
 // public structure, for linked list
-struct _linkedList {
-  _Node_t *head;
-  _Node_t *tail;
+struct linked_list {
+  node *head;
+  node *tail;
 };
 
 // private functions
-void _checkAllocation(void *pointer) {
-  if (pointer == NULL) {
-    printf("\033[1;35m");
-    printf("Allocation Failed!");
-    printf("\033[0m");
-    exit(1);
-  }
+
+static node *node_new(int value) {
+  node *new_node = malloc(sizeof(node));
+  check_allocation(new_node, "Allocation error at 'node_new'");
+
+  new_node->data = value;
+  new_node->next = NULL;
+  new_node->previous = NULL;
+
+  return new_node;
 }
 
-void _throwError(char *message) {
-  printf("\033[1;35m");
-  printf("%s\n", message);
-  printf("\033[0m");
-}
-
-_Node_t *_createNode(int value) {
-  _Node_t *allocatedNode = (_Node_t*) malloc(sizeof(_Node_t));
-  _checkAllocation(allocatedNode);
-
-  allocatedNode->data = value;
-  allocatedNode->next = NULL;
-  allocatedNode->previous = NULL;
-
-  return allocatedNode;
-}
-
-_Node_t *_searchForNode(LinkedList_t *list, int key) {
-  _Node_t *current = list->head;
+static node *find_node(linked_list *list, int key) {
+  node *current = list->head;
 
   while (current != NULL) {
     if (current->data == key) {
@@ -58,9 +45,9 @@ _Node_t *_searchForNode(LinkedList_t *list, int key) {
   return NULL;
 }
 
-_Node_t *_getNodeAtPosition(LinkedList_t *list, int position) {
+static node *get_node_at_position(linked_list *list, int position) {
   int i = 0;
-  _Node_t *current = list->head;
+  node *current = list->head;
 
   while (current != NULL) {
     if (i == position) {
@@ -74,38 +61,33 @@ _Node_t *_getNodeAtPosition(LinkedList_t *list, int position) {
   return NULL;
 }
 
-bool _isEmpty(LinkedList_t *list) {
+static bool list_is_empty(linked_list *list) {
   return (list->head == NULL) ? true : false;
 }
 
-
 // public functions
-LinkedList_t *createEmptyList() {
-  LinkedList_t *allocatedList = (LinkedList_t *) malloc(sizeof(LinkedList_t));
+linked_list *list_new() {
+  linked_list *new_list = malloc(sizeof(linked_list));
 
-  _checkAllocation(allocatedList);
+  check_allocation(new_list, "Allocation error at 'list_new'");
 
-  allocatedList->head = NULL;
-  allocatedList->tail = NULL;
+  new_list->head = NULL;
+  new_list->tail = NULL;
 
-  return allocatedList;
+  return new_list;
 }
 
-int getHeadValue(LinkedList_t *list) {
-  return list->head->data; 
-}
+int list_get_head(linked_list *list) { return list->head->data; }
 
-int getTailValue(LinkedList_t *list) {
-  return list->tail->data;
-}
+int list_get_tail(linked_list *list) { return list->tail->data; }
 
-int getValueAtPosition(LinkedList_t *list, int position) {
+int list_get_at_position(linked_list *list, int position) {
   if (position == 0) {
-    return getHeadValue(list);
+    return list_get_head(list);
   }
 
   int count = 0;
-  _Node_t *current = list->head;
+  node *current = list->head;
 
   while (current != NULL) {
     if (count == position) {
@@ -116,24 +98,24 @@ int getValueAtPosition(LinkedList_t *list, int position) {
     current = current->next;
   }
 
-  _throwError("Invalid position.");
+  throw_error("Invalid position.");
   return (int)NAN;
 }
 
-int* convertIntoArray(LinkedList_t *list) {
-  if (_isEmpty(list)) {
-    _throwError("The list is empty, couldn't create the array.");
+int *list_to_array(linked_list *list) {
+  if (list_is_empty(list)) {
+    throw_error("The list is empty, couldn't create the array.");
     return NULL;
   }
 
-  int *array = (int*) malloc(sizeof(int));
-  _checkAllocation(array);
+  int *array = malloc(sizeof(int));
+  check_allocation(array, "Allocation error at 'list_to_array'");
 
   int pos = 0;
-  _Node_t *current = list->head;
+  node *current = list->head;
   while (current != NULL) {
     array = realloc(array, (pos + 1) * sizeof(int));
-    array[pos] = getValueAtPosition(list, pos);
+    array[pos] = list_get_at_position(list, pos);
     pos++;
 
     current = current->next;
@@ -142,107 +124,90 @@ int* convertIntoArray(LinkedList_t *list) {
   return array;
 }
 
-void addAtHead(LinkedList_t *list, int newValue) {
-  _Node_t *newNode = _createNode(newValue);
+void list_add_head(linked_list *list, int newValue) {
+  node *newnode = node_new(newValue);
 
-  if (_isEmpty(list)) {
-    list->head = newNode;
-    list->tail = newNode;
+  if (list_is_empty(list)) {
+    list->head = newnode;
+    list->tail = newnode;
     return;
   }
 
-  newNode->next = list->head;
-  list->head->previous = newNode;
-  list->head = newNode;
+  newnode->next = list->head;
+  list->head->previous = newnode;
+  list->head = newnode;
 }
 
-void addAtTail(LinkedList_t *list, int newValue) {
-  _Node_t *newNode = _createNode(newValue);
+void list_add_tail(linked_list *list, int newValue) {
+  node *newnode = node_new(newValue);
 
-  if (_isEmpty(list)) {
-    list->head = newNode;
-    list->tail = newNode;
+  if (list_is_empty(list)) {
+    list->head = newnode;
+    list->tail = newnode;
     return;
   }
 
-  newNode->previous = list->tail;
-  list->tail->next = newNode;
-  list->tail = newNode;
+  newnode->previous = list->tail;
+  list->tail->next = newnode;
+  list->tail = newnode;
 }
 
-void addAfter(LinkedList_t *list, int key, int newValue) {
-  _Node_t *foundNode = _searchForNode(list, key);
+void list_add_after(linked_list *list, int key, int newValue) {
+  node *foundnode = find_node(list, key);
 
-  if (foundNode == NULL) {
-    _throwError("There are no matches for provided key. Couldn't add new value");
+  if (foundnode == NULL) {
+    throw_error(
+        "There are no matches for provided key. Couldn't add new value");
     return;
   }
 
-  if (foundNode->previous == NULL) {
-    addAtHead(list, newValue);
+  if (foundnode->previous == NULL) {
+    list_add_head(list, newValue);
     return;
   }
 
-  if (foundNode->next == NULL) {
-    addAtTail(list, newValue);
+  if (foundnode->next == NULL) {
+    list_add_tail(list, newValue);
     return;
   }
 
-  _Node_t *newNode = _createNode(newValue);
+  node *newnode = node_new(newValue);
 
-  newNode->next = foundNode->next;
-  newNode->previous = foundNode;
-  foundNode->next->previous = newNode;
-  foundNode->next = newNode;
+  newnode->next = foundnode->next;
+  newnode->previous = foundnode;
+  foundnode->next->previous = newnode;
+  foundnode->next = newnode;
 }
 
-void addBefore(LinkedList_t *list, int key, int newValue) {
-  _Node_t *foundNode = _searchForNode(list, key);
+void list_add_before(linked_list *list, int key, int newValue) {
+  node *foundnode = find_node(list, key);
 
-  if (foundNode == NULL) {
-    _throwError("There are no matches for provided key. Couldn't add new value");
+  if (foundnode == NULL) {
+    throw_error(
+        "There are no matches for provided key. Couldn't add new value");
     return;
   }
 
-  if (foundNode->previous == NULL) {
-    addAtHead(list, newValue);
+  if (foundnode->previous == NULL) {
+    list_add_head(list, newValue);
     return;
   }
 
-  if (foundNode->next == NULL) {
-    addAtTail(list, newValue);
+  if (foundnode->next == NULL) {
+    list_add_tail(list, newValue);
     return;
   }
 
-  _Node_t *newNode = _createNode(newValue);
-  foundNode->previous->next = newNode;
-  newNode->previous = foundNode->previous;
-  newNode->next = foundNode;
-  foundNode->previous = newNode;
+  node *newnode = node_new(newValue);
+  foundnode->previous->next = newnode;
+  newnode->previous = foundnode->previous;
+  newnode->next = foundnode;
+  foundnode->previous = newnode;
 }
 
-void deleteHead(LinkedList_t *list) {
-  if (_isEmpty(list)) {
-    _throwError("The list is empty.");
-    return;
-  }
-
-  if (list->head->next == NULL)  {
-    free(list->head);
-    list->head = NULL;
-    list->tail = NULL;
-    return;
-  }
-
-  _Node_t *aux = list->head;
-  list->head->next->previous = NULL;
-  list->head = list->head->next;
-  free(aux);
-}
-
-void deleteTail(LinkedList_t *list) {
-  if (_isEmpty(list)) {
-    _throwError("The list is empty.");
+void list_delete_head(linked_list *list) {
+  if (list_is_empty(list)) {
+    throw_error("The list is empty.");
     return;
   }
 
@@ -253,60 +218,79 @@ void deleteTail(LinkedList_t *list) {
     return;
   }
 
-  _Node_t *aux = list->tail;
+  node *aux = list->head;
+  list->head->next->previous = NULL;
+  list->head = list->head->next;
+  free(aux);
+}
+
+void list_delete_tail(linked_list *list) {
+  if (list_is_empty(list)) {
+    throw_error("The list is empty.");
+    return;
+  }
+
+  if (list->head->next == NULL) {
+    free(list->head);
+    list->head = NULL;
+    list->tail = NULL;
+    return;
+  }
+
+  node *aux = list->tail;
   list->tail->previous->next = NULL;
   list->tail = list->tail->previous;
   free(aux);
 }
 
-void deleteNodeWithKey(LinkedList_t *list, int key) {
-  _Node_t *foundNode = _searchForNode(list, key);
+void list_delete_key(linked_list *list, int key) {
+  node *foundnode = find_node(list, key);
 
-  if (foundNode == NULL) {
-    _throwError("There are no matches for provided key. Couldn't delete value");
+  if (foundnode == NULL) {
+    throw_error("There are no matches for provided key. Couldn't delete value");
     return;
   }
 
-  if (foundNode->previous == NULL) {
-    deleteHead(list);
+  if (foundnode->previous == NULL) {
+    list_delete_head(list);
     return;
   }
 
-  if (foundNode->next == NULL) {
-    deleteTail(list);
+  if (foundnode->next == NULL) {
+    list_delete_tail(list);
     return;
   }
 
-  foundNode->previous->next = foundNode->next;
-  foundNode->next->previous = foundNode->previous;
-  free(foundNode);
+  foundnode->previous->next = foundnode->next;
+  foundnode->next->previous = foundnode->previous;
+  free(foundnode);
 }
 
-void deleteAtPosition(LinkedList_t *list, int position) {
-  _Node_t *foundNode = _getNodeAtPosition(list, position);
+void list_delete_position(linked_list *list, int position) {
+  node *foundnode = get_node_at_position(list, position);
 
-  if (foundNode == NULL) {
-    _throwError("There are no matches for provided key. Couldn't delete value");
+  if (foundnode == NULL) {
+    throw_error("There are no matches for provided key. Couldn't delete value");
     return;
   }
 
-  if (foundNode->previous == NULL) {
-    deleteHead(list);
+  if (foundnode->previous == NULL) {
+    list_delete_head(list);
     return;
   }
 
-  if (foundNode->next == NULL) {
-    deleteTail(list);
+  if (foundnode->next == NULL) {
+    list_delete_tail(list);
     return;
   }
 
-  foundNode->previous->next = foundNode->next;
-  foundNode->next->previous = foundNode->previous;
-  free(foundNode);
+  foundnode->previous->next = foundnode->next;
+  foundnode->next->previous = foundnode->previous;
+  free(foundnode);
 }
 
-void displayLinkedList(LinkedList_t *list) {
-  _Node_t *current = list->head;
+void list_display(linked_list *list) {
+  node *current = list->head;
 
   printf("\033[1;36m");
   while (current != NULL) {
@@ -320,8 +304,8 @@ void displayLinkedList(LinkedList_t *list) {
   printf("\033[0m");
 }
 
-void displayLinkedListReverse(LinkedList_t *list) {
-  _Node_t *current = list->tail;
+void list_display_reverse(linked_list *list) {
+  node *current = list->tail;
 
   printf("\033[1;36m");
   while (current != NULL) {
@@ -335,11 +319,11 @@ void displayLinkedListReverse(LinkedList_t *list) {
   printf("\033[0m");
 }
 
-void freeLinkedList(LinkedList_t *list) {
-  _Node_t *current = list->head;
+void list_free(linked_list *list) {
+  node *current = list->head;
 
   while (current != NULL) {
-    _Node_t *aux = current;
+    node *aux = current;
     current = current->next;
     free(aux);
   }

@@ -51,6 +51,7 @@ void list_add_tail(list *list, void *data) {
   }
 
   list->tail->next = new;
+  list->tail = new;
 }
 
 void list_remove(list *list, int (*cpr_func)(void *, void *), void *item) {
@@ -89,6 +90,15 @@ int list_walk_through(list *list, int (*callback)(void *, void *), void *data) {
   }
 
   return 1;
+}
+
+void list_display(list *list, void (*display_fn)(void *)) {
+  node *current = list->head;
+
+  while (current) {
+    display_fn(current->data);
+    current = current->next;
+  }
 }
 
 void list_free(list *list) {

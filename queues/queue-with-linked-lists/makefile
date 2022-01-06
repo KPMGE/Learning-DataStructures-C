@@ -1,58 +1,65 @@
-SRC          = ./src
-INCLUDE      = ./include
-OBJ          = ./obj
-NAME_PROGRAM = queue-linked-list.exe # must end with .exe
-FLAGS        = -lm -pedantic -Wall -std=c99
-COMPILER     = gcc   
+NAME_PROGRAM   = queue-linked-list
+MAIN_FILE_NAME = main
+SRC            = ./src
+INCLUDE        = ./include
+OBJ            = ./obj
+BIN            = ./bin
+FLAGS          = -lm -pedantic -Wall 
+COMPILER       = gcc   
 
+C_FILES        = $(wildcard $(SRC)/*.c)
+OBJ_PATH_FILES = $(patsubst $(SRC)%,$(OBJ)%,$(C_FILES))
+OBJ_FILES      = $(patsubst %.c,%.o,$(OBJ_PATH_FILES))
 
-all: createDirectory libed createFinalProgam
+all: clean create_dir $(OBJ_FILES) create_final_progam
 
-test: clean all run
-
-# all target files
-libed: \
-	${OBJ}/main.o\
-	${OBJ}/queue-linked-list.o\
-
-createFinalProgam: ${NAME_PROGRAM}
+create_final_progam: $(BIN)/$(NAME_PROGRAM)
 
 # rule for main file
-./obj/main.o: ./src/main.c
+$(OBJ)/$(MAIN_FILE_NAME).o: $(SRC)/$(MAIN_FILE_NAME).c
 	@ echo "\033[1;32m"
 	@ echo "Compiling main program... "
-	@ ${COMPILER} -c $< -I ${INCLUDE} -o $@ ${FLAGS}
+	@ $(COMPILER) -c $< -I $(INCLUDE) -o $@ $(FLAGS)
 	@ echo "\033[0m"
 
-# rule for libed
-${OBJ}/%.o: ${SRC}/%.c ${INCLUDE}/%.h
+# rule for all o files
+$(OBJ)/%.o: $(SRC)/%.c $(INCLUDE)/%.h
 	@ echo "\033[1;32m"
 	@ echo "Compiling program $<..."
-	@ ${COMPILER} -c $< -I ${INCLUDE} -o $@ ${FLAGS}
+	@ $(COMPILER) -c $< -I $(INCLUDE) -o $@ $(FLAGS)
 	@ echo "\033[0m"
 
-# rule for createFinalProgam
-%.exe: 
+# rule for create_final_progam
+$(BIN)/%: 
 	@ echo "\033[1;32m"
 	@ echo "Creating executable..."
-	@ ${COMPILER} $< ${OBJ}/*.o -I ${INCLUDE} -o $@
+	@ $(COMPILER) $< $(OBJ)/*.o -I $(INCLUDE) -o $@
 	@ echo "\033[0m"
 
-# create a directory for objects
-createDirectory: 
+# create all needed directories
+create_dir: 
 	@ echo "\033[1;32m"
-	@ echo "Creating directory..."
-	@ mkdir ${OBJ}
+	@ echo "Creating $(OBJ) directory...\n"
+	@ mkdir $(OBJ)
+	@ echo "Creating $(BIN) directory..."
+	@ mkdir $(BIN)
 	@ echo "\033[0m"
 
-run: ${NAME_PROGRAM}
-	@ ./${NAME_PROGRAM}
+# rule to run the final program
+run: 
+	@ echo "\033[1;32m"
+	@ echo "Running $(BIN)/$(NAME_PROGRAM)"
+	@ ./$(BIN)/$(NAME_PROGRAM)
+	@ echo "\033[0m"
 
-valgrind: ${NAME_PROGRAM}
-	@ valgrind ./${NAME_PROGRAM}
+valgrind: 
+	@ echo "\033[1;32m"
+	@ echo "Running valgrind on $(BIN)/$(NAME_PROGRAM)"
+	@ echo "\033[0m"
+	@ valgrind ./$(BIN)/$(NAME_PROGRAM)
 
 clean:
 	@ echo "\033[1;35m"
-	@ echo "Removing files..."
-	@ rm -rf ${OBJ} ${NAME_PROGRAM}
+	@ echo "Removing temporary files..."
+	@ rm -rf $(OBJ) $(NAME_PROGRAM) $(BIN)
 	@ echo "\033[0m"
